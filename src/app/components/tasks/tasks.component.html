@@ -1,0 +1,71 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>Mis Tareas</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-refresher slot="fixed" (ionRefresh)="handleRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  <!-- Loading spinner -->
+  @if (taskService.loading()) {
+  <div class="loading-container">
+    <ion-spinner name="crescent"></ion-spinner>
+    <p>Cargando tareas...</p>
+  </div>
+  } @else {
+  <!-- Lista de tareas -->
+  @if (taskService.tasks().length > 0) {
+  <ion-list>
+    @for (task of taskService.tasks(); track task.id) {
+    <ion-item-sliding>
+      <ion-item [class.completed]="task.completed">
+        <ion-checkbox
+          slot="start"
+          [checked]="task.completed"
+          (ionChange)="toggleTask(task)"
+        ></ion-checkbox>
+
+        <ion-label [class.strikethrough]="task.completed">
+          <h2>{{ task.title }}</h2>
+          @if (task.description) {
+          <p>{{ task.description }}</p>
+          }
+        </ion-label>
+
+        <ion-note slot="end">
+          {{ task.createdAt | date : "shortDate" }}
+        </ion-note>
+      </ion-item>
+
+      <ion-item-options side="end">
+        <ion-item-option color="primary" (click)="editTask(task)">
+          <ion-icon name="create"></ion-icon>
+          Editar
+        </ion-item-option>
+        <ion-item-option color="danger" (click)="deleteTask(task)">
+          <ion-icon name="trash"></ion-icon>
+          Eliminar
+        </ion-item-option>
+      </ion-item-options>
+    </ion-item-sliding>
+    }
+  </ion-list>
+  } @else {
+  <!-- Estado vacío -->
+  <div class="empty-state">
+    <ion-icon name="list-outline" size="large"></ion-icon>
+    <h2>No hay tareas</h2>
+    <p>Pulsa el botón + para crear tu primera tarea</p>
+  </div>
+  } }
+
+  <!-- FAB para agregar tarea -->
+  <ion-fab slot="fixed" vertical="bottom" horizontal="end">
+    <ion-fab-button (click)="openCreateTask()">
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+</ion-content>

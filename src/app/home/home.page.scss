@@ -25,3 +25,40 @@
 #container a {
   text-decoration: none;
 }
+
+.container {
+  padding: 16px;
+}
+
+.completed {
+  opacity: 0.6;
+}
+
+.completed-text {
+  text-decoration: line-through;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 40px 20px;
+  color: #999;
+
+  ion-icon {
+    font-size: 80px;
+    color: #ccc;
+  }
+}
+
+ion-badge {
+  font-size: 10px;
+  padding: 4px 8px;
+}
+
+ion-item.selected {
+  --background: var(--ion-color-light);
+  --color: var(--ion-color-primary);
+}
+
+ion-item.selected ion-icon {
+  color: var(--ion-color-primary);
+}
