@@ -1,4 +1,11 @@
-import { Component, inject, signal, OnInit } from '@angular/core';
+import {
+  Component,
+  inject,
+  signal,
+  OnInit,
+  ChangeDetectionStrategy,
+  computed,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   FormsModule,
@@ -52,6 +59,7 @@ import {
   styleUrls: ['./category.component.scss'],
   standalone: true,
   imports: [IonicModule, FormsModule, ReactiveFormsModule, CommonModule],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CategoryComponent implements OnInit {
   readonly categoryService = inject(CategoryService);
@@ -67,6 +75,17 @@ export class CategoryComponent implements OnInit {
   categoryForm!: FormGroup;
   availableColors: string[] = [];
   availableIcons: string[] = [];
+
+  taskCountMap = computed(() => {
+    const tasks = this.taskService.tasks();
+    const countMap = new Map<string, number>();
+    tasks.forEach((task) => {
+      if (task.categoryId) {
+        countMap.set(task.categoryId, (countMap.get(task.categoryId) || 0) + 1);
+      }
+    });
+    return countMap;
+  });
 
   private colorNames: { [key: string]: string } = {
     '#6366f1': 'Índigo',
@@ -249,7 +268,7 @@ export class CategoryComponent implements OnInit {
   }
 
   getTaskCount(categoryId: string): number {
-    return this.taskService.getTasksByCategory(categoryId).length;
+    return this.taskCountMap().get(categoryId) || 0;
   }
 
   getColorName(color: string): string {

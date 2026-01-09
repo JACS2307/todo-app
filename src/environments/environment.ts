@@ -1,16 +1,19 @@
-// This file can be replaced during build by using the `fileReplacements` array.
-// `ng build` replaces `environment.ts` with `environment.prod.ts`.
-// The list of file replacements can be found in `angular.json`.
-
 export const environment = {
-  production: false
-};
+  production: false,
+  appName: 'Todo App',
+  appVersion: '1.0.0',
 
-/*
- * For easier debugging in development mode, you can import the following file
- * to ignore zone related error stack frames such as `zone.run`, `zoneDelegate.invokeTask`.
- *
- * This import should be commented out in production mode because it will have a negative impact
- * on performance if an error is thrown.
- */
-// import 'zone.js/plugins/zone-error';  // Included with Angular CLI.
+  firebaseConfig: {
+    apiKey: 'AIzaSyCsHzhGe99dFt6bRpe6rgPj9iGrVpFHlO4',
+    authDomain: 'todo-app-58945.firebaseapp.com',
+    projectId: 'todo-app-58945',
+    storageBucket: 'todo-app-58945.firebasestorage.app',
+    messagingSenderId: '1032020571042',
+    appId: '1:1032020571042:web:cc7e1c0cad3721217778fb',
+    measurementId: 'G-YGBPR1E8B6',
+  },
+  logging: {
+    level: 'debug',
+    enableConsole: true,
+  },
+};

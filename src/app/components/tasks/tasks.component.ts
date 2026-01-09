@@ -1,4 +1,11 @@
-import { Component, inject, OnInit, signal, computed } from '@angular/core';
+import {
+  Component,
+  inject,
+  OnInit,
+  signal,
+  computed,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   FormsModule,
@@ -47,6 +54,7 @@ import {
 import { Task } from 'src/app/models/task.model';
 import { TaskService } from 'src/app/services/task.service';
 import { CategoryService } from 'src/app/services/category.service';
+import { RemoteConfigService } from 'src/app/services/remote-config.service';
 
 @Component({
   selector: 'app-task-list',
@@ -54,10 +62,12 @@ import { CategoryService } from 'src/app/services/category.service';
   styleUrls: ['./tasks.component.scss'],
   standalone: true,
   imports: [CommonModule, IonicModule, FormsModule, ReactiveFormsModule],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TasksComponent implements OnInit {
   readonly taskService = inject(TaskService);
   readonly categoryService = inject(CategoryService);
+  readonly remoteConfig = inject(RemoteConfigService);
   private alertController = inject(AlertController);
   private toastController = inject(ToastController);
   private fb = inject(FormBuilder);
@@ -105,8 +115,26 @@ export class TasksComponent implements OnInit {
   });
 
   // Conteo de tareas por categoría
+  private taskCountMap = computed(() => {
+    const tasks = this.taskService.tasks();
+    const countMap = new Map<string, number>();
+    tasks.forEach((task) => {
+      if (task.categoryId) {
+        countMap.set(task.categoryId, (countMap.get(task.categoryId) || 0) + 1);
+      }
+    });
+    return countMap;
+  });
+
+  // Computed: mapa de categorías por ID
+  private categoryMap = computed(() => {
+    const categories = this.categoryService.categories();
+    return new Map(categories.map((cat) => [cat.id, cat]));
+  });
+
+  // Conteo de tareas por categoría
   getTaskCountByCategory(categoryId: string): number {
-    return this.taskService.tasks().filter((t) => t.categoryId === categoryId).length;
+    return this.taskCountMap().get(categoryId) || 0;
   }
 
   constructor() {
@@ -187,7 +215,10 @@ export class TasksComponent implements OnInit {
   // Form methods
   private initForm(task?: Task) {
     this.taskForm = this.fb.group({
-      title: [task?.title || '', [Validators.required, Validators.minLength(1)]],
+      title: [
+        task?.title || '',
+        [Validators.required, Validators.minLength(1)],
+      ],
       description: [task?.description || ''],
       categoryId: [task?.categoryId || null],
     });

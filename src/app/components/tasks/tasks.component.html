@@ -12,7 +12,8 @@
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
 
-  <!-- Header con estadísticas -->
+  <!-- Header con estadísticas (controlado por Remote Config) -->
+  @if (remoteConfig.statisticsEnabled()) {
   <div class="stats-header">
     <div class="stats-summary">
       <div class="stats-progress">
@@ -37,9 +38,10 @@
       </div>
     </div>
   </div>
+  }
 
-  <!-- Filtro de categorías -->
-  @if (categoryService.categories().length > 0) {
+  <!-- Filtro de categorías (controlado por Remote Config) -->
+  @if (remoteConfig.categoriesEnabled() && categoryService.categories().length > 0) {
   <div class="category-filter">
     <button
       class="filter-chip"
