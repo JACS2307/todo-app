@@ -8,9 +8,23 @@
     <ion-content>
       <ion-list>
         <ion-menu-toggle auto-hide="false">
-          <ion-item routerLink="/home/tasks" routerLinkActive="selected">
+          <ion-item
+            routerLink="/home/tasks"
+            routerLinkActive="selected"
+            [routerLinkActiveOptions]="{ exact: true }"
+          >
             <ion-icon slot="start" name="list-outline"></ion-icon>
             <ion-label>Tareas</ion-label>
+          </ion-item>
+        </ion-menu-toggle>
+        <ion-menu-toggle auto-hide="false">
+          <ion-item
+            routerLink="/home/categories"
+            routerLinkActive="selected"
+            [routerLinkActiveOptions]="{ exact: true }"
+          >
+            <ion-icon slot="start" name="color-palette-outline"></ion-icon>
+            <ion-label>Categorías</ion-label>
           </ion-item>
         </ion-menu-toggle>
       </ion-list>

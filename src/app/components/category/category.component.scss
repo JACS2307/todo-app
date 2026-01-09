@@ -1,0 +1,195 @@
+.category-color-indicator {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  margin-right: 8px;
+}
+
+.category-end {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.category-end ion-badge {
+  font-size: 12px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+.category-actions {
+  gap: 8px;
+  padding-right: 8px;
+}
+
+.category-actions ion-item-option {
+  --border-radius: 12px;
+  --padding-start: 12px;
+  --padding-end: 12px;
+  min-width: 44px;
+}
+
+.category-actions ion-icon {
+  font-size: 18px;
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 50%;
+  padding: 32px;
+  text-align: center;
+
+  ion-icon {
+    font-size: 64px;
+    color: var(--ion-color-medium);
+    margin-bottom: 16px;
+  }
+
+  h2 {
+    color: var(--ion-color-dark);
+    margin-bottom: 8px;
+  }
+
+  p {
+    color: var(--ion-color-medium);
+  }
+}
+
+ion-note {
+  display: block;
+  margin-bottom: 8px;
+}
+
+// Estilos para la vista previa
+.preview-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px 16px;
+  margin-bottom: 16px;
+  background: var(--ion-color-light);
+  border-radius: 12px;
+}
+
+.preview-label {
+  font-size: 12px;
+  color: var(--ion-color-medium);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 12px;
+}
+
+.preview-chip-container {
+  ion-chip {
+    font-size: 16px;
+    padding: 8px 16px;
+    height: auto;
+
+    ion-icon {
+      font-size: 18px;
+      margin-right: 6px;
+    }
+  }
+}
+
+// Estilos para acordeones
+.accordion-group {
+  margin-top: 8px;
+}
+
+.accordion-content {
+  padding: 12px 16px;
+  background: var(--ion-color-light);
+}
+
+.selected-indicator {
+  margin-right: 8px;
+}
+
+// Cuadrícula de colores
+.color-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 12px;
+  justify-items: center;
+}
+
+.color-dot {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: block;
+}
+
+.color-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border: 2px solid transparent;
+  border-radius: 50%;
+  background: transparent;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    transform: scale(1.1);
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+
+  &.selected {
+    border-color: var(--ion-color-dark);
+    background: var(--ion-color-light-shade);
+  }
+}
+
+// Cuadrícula de iconos
+.icon-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 8px;
+}
+
+.icon-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 1;
+  padding: 8px;
+  border: 2px solid transparent;
+  border-radius: 10px;
+  background: var(--ion-background-color);
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: var(--ion-color-light-shade);
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+
+  &.selected {
+    border-color: var(--selected-color, var(--ion-color-primary));
+    background: color-mix(in srgb, var(--selected-color, var(--ion-color-primary)) 15%, transparent);
+
+    ion-icon {
+      color: var(--selected-color, var(--ion-color-primary));
+    }
+  }
+
+  ion-icon {
+    font-size: 20px;
+    color: var(--ion-color-dark);
+    transition: color 0.2s ease;
+  }
+}

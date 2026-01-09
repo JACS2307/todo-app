@@ -251,4 +251,11 @@ export class TaskService {
         return tasks;
     }
   }
+
+  /**
+   * Obtiene tareas por categoría
+   */
+  getTasksByCategory(categoryId: string): Task[] {
+    return this.tasksSignal().filter((task) => task.categoryId === categoryId);
+  }
 }

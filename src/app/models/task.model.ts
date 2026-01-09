@@ -7,6 +7,7 @@ export interface Task {
   updatedAt: Date;
   priority?: TaskPriority;
   dueDate?: Date;
+  categoryId?: string;
 }
 
 export enum TaskPriority {

@@ -14,6 +14,14 @@ export const routes: Routes = [
         title: 'Mis Tareas',
       },
       {
+        path: 'categories',
+        loadComponent: () =>
+          import('./components/category/category.component').then(
+            (m) => m.CategoryComponent
+          ),
+        title: 'Mis Tareas',
+      },
+      {
         path: '',
         redirectTo: 'tasks',
         pathMatch: 'full',
