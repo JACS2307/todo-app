@@ -183,18 +183,18 @@ export class CategoryService {
    */
   getAvailableColors(): string[] {
     return [
-      '#3880ff', // primary
-      '#3dc2ff', // secondary
-      '#5260ff', // tertiary
-      '#2dd36f', // success
-      '#ffc409', // warning
-      '#eb445a', // danger
-      '#92949c', // medium
-      '#222428', // dark
-      '#8b5cf6', // violet
-      '#f97316', // orange
+      '#6366f1', // índigo (primary)
+      '#06b6d4', // cyan (secondary)
+      '#ec4899', // rosa (tertiary)
+      '#10b981', // verde esmeralda (success)
+      '#f59e0b', // ámbar (warning)
+      '#ef4444', // rojo coral (danger)
+      '#8b5cf6', // violeta
+      '#f97316', // naranja
       '#14b8a6', // teal
-      '#ec4899', // pink
+      '#3b82f6', // azul
+      '#84cc16', // lima
+      '#64748b', // gris pizarra
     ];
   }
 

@@ -34,4 +34,151 @@
 
 /* @import "@ionic/angular/css/palettes/dark.always.css"; */
 /* @import "@ionic/angular/css/palettes/dark.class.css"; */
-@import '@ionic/angular/css/palettes/dark.system.css';
+@import "@ionic/angular/css/palettes/dark.system.css";
+
+// =============================================================================
+// ESTILOS GLOBALES PERSONALIZADOS
+// =============================================================================
+
+// Tipografía
+:root {
+  --ion-font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
+}
+
+// Componentes globales
+ion-content {
+  --padding-start: 0;
+  --padding-end: 0;
+}
+
+// Toolbar con sombra sutil
+ion-toolbar {
+  --border-width: 0 !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+// Cards con bordes redondeados
+ion-card {
+  --border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+// Items más limpios
+ion-item {
+  --inner-border-width: 0;
+  --border-width: 0;
+}
+
+// Chips
+ion-chip {
+  --border-radius: 20px;
+  font-weight: 500;
+}
+
+// Botones más suaves
+ion-button {
+  --border-radius: 12px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+}
+
+// FAB
+ion-fab-button {
+  --border-radius: 16px;
+}
+
+// Inputs
+ion-input,
+ion-textarea {
+  --placeholder-opacity: 0.5;
+}
+
+// Modal
+ion-modal {
+  --border-radius: 20px 20px 0 0;
+
+  &.modal-default:not(.overlay-hidden) {
+    --box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.15);
+  }
+}
+
+// Action sheet
+ion-action-sheet {
+  --button-background-activated: var(--ion-color-light);
+}
+
+// Alert
+ion-alert {
+  --border-radius: 16px;
+
+  .alert-wrapper {
+    border-radius: 16px !important;
+  }
+}
+
+// Toast
+ion-toast {
+  --border-radius: 12px;
+  --box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+}
+
+// Badges
+ion-badge {
+  --border-radius: 8px;
+  font-weight: 600;
+  padding: 4px 8px;
+}
+
+// Checkbox con transición suave
+ion-checkbox {
+  --transition: all 0.2s ease;
+}
+
+// Scrollbar personalizado (webkit)
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--ion-color-medium);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--ion-color-medium-shade);
+}
+
+// Animaciones suaves globales
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+// Menú lateral
+ion-menu {
+  --width: 280px;
+
+  ion-content {
+    --background: var(--ion-background-color);
+  }
+
+  ion-item {
+    --padding-start: 16px;
+    --border-radius: 12px;
+    margin: 4px 8px;
+
+    &.selected {
+      --background: var(--ion-color-primary);
+      --color: var(--ion-color-primary-contrast);
+
+      ion-icon {
+        color: var(--ion-color-primary-contrast);
+      }
+    }
+  }
+}

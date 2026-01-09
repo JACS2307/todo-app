@@ -68,18 +68,18 @@ export class CategoryComponent implements OnInit {
   availableIcons: string[] = [];
 
   private colorNames: { [key: string]: string } = {
-    '#3880ff': 'Azul',
-    '#3dc2ff': 'Celeste',
-    '#5260ff': 'Índigo',
-    '#2dd36f': 'Verde',
-    '#ffc409': 'Amarillo',
-    '#eb445a': 'Rojo',
-    '#92949c': 'Gris',
-    '#222428': 'Negro',
+    '#6366f1': 'Índigo',
+    '#06b6d4': 'Cyan',
+    '#ec4899': 'Rosa',
+    '#10b981': 'Esmeralda',
+    '#f59e0b': 'Ámbar',
+    '#ef4444': 'Coral',
     '#8b5cf6': 'Violeta',
     '#f97316': 'Naranja',
     '#14b8a6': 'Teal',
-    '#ec4899': 'Rosa',
+    '#3b82f6': 'Azul',
+    '#84cc16': 'Lima',
+    '#64748b': 'Pizarra',
   };
 
   private iconNames: { [key: string]: string } = {
