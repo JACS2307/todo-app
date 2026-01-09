@@ -21,6 +21,7 @@ import {
   checkmark,
   colorPaletteOutline,
   chevronDownOutline,
+  menuOutline,
 
   // Iconos disponibles para categorías
   personOutline,
@@ -114,6 +115,7 @@ export class CategoryComponent implements OnInit {
       checkmark,
       colorPaletteOutline,
       chevronDownOutline,
+      menuOutline,
 
       // Iconos para categorías
       personOutline,

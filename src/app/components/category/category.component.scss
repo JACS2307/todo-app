@@ -1,3 +1,33 @@
+// =============================================================================
+// PAGE HEADER
+// =============================================================================
+.page-header {
+  padding: 24px 20px 16px;
+  background: var(--ion-background-color);
+
+  h1 {
+    margin: 0 0 4px 0;
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--ion-color-dark);
+    letter-spacing: -0.5px;
+  }
+
+  p {
+    margin: 0;
+    font-size: 14px;
+    color: var(--ion-color-medium);
+  }
+}
+
+// =============================================================================
+// CATEGORIES LIST
+// =============================================================================
+.categories-list {
+  padding-top: 8px;
+  background: transparent;
+}
+
 .category-color-indicator {
   width: 16px;
   height: 16px;

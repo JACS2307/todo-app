@@ -159,26 +159,168 @@ ion-checkbox {
   -webkit-tap-highlight-color: transparent;
 }
 
-// Menú lateral
+// =============================================================================
+// MENÚ LATERAL
+// =============================================================================
 ion-menu {
-  --width: 280px;
+  --width: 300px;
+  --max-width: 300px;
 
-  ion-content {
-    --background: var(--ion-background-color);
+  &::part(backdrop) {
+    background: rgba(0, 0, 0, 0.5);
   }
 
-  ion-item {
-    --padding-start: 16px;
-    --border-radius: 12px;
-    margin: 4px 8px;
+  &::part(container) {
+    border-radius: 0 20px 20px 0;
+    box-shadow: 4px 0 24px rgba(0, 0, 0, 0.15);
+  }
+}
 
-    &.selected {
-      --background: var(--ion-color-primary);
-      --color: var(--ion-color-primary-contrast);
+// =============================================================================
+// TRANSICIONES DE NAVEGACIÓN
+// =============================================================================
+ion-router-outlet {
+  // Transición suave entre páginas
+  > * {
+    transition: opacity 0.2s ease-in-out;
+  }
+}
+
+// Animación de entrada para el contenido
+@keyframes fadeSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// Clase para aplicar animación
+.animate-in {
+  animation: fadeSlideIn 0.3s ease-out;
+}
+
+// =============================================================================
+// MEJORAS TÁCTILES MÓVILES
+// =============================================================================
+
+// Área táctil mínima
+ion-button,
+ion-fab-button,
+ion-item,
+ion-chip {
+  --touch-target-size: 44px;
+}
+
+// Feedback táctil mejorado
+ion-item {
+  --transition: background-color 0.15s ease;
+
+  &:active {
+    --background: var(--ion-color-light-shade);
+  }
+}
+
+// Botones con feedback
+ion-button {
+  transition: transform 0.1s ease, opacity 0.1s ease;
+
+  &:active {
+    transform: scale(0.97);
+    opacity: 0.9;
+  }
+}
+
+// FAB con sombra dinámica
+ion-fab-button {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+  &:active {
+    transform: scale(0.95);
+  }
+}
+
+// =============================================================================
+// PULL TO REFRESH
+// =============================================================================
+ion-refresher {
+  ion-refresher-content {
+    --color: var(--ion-color-primary);
+  }
+}
+
+// =============================================================================
+// ITEM SLIDING MEJORADO
+// =============================================================================
+ion-item-sliding {
+  ion-item-options {
+    ion-item-option {
+      --border-radius: 0;
+      font-weight: 500;
 
       ion-icon {
-        color: var(--ion-color-primary-contrast);
+        font-size: 22px;
       }
     }
+  }
+}
+
+// =============================================================================
+// SAFE AREAS (NOTCH, HOME INDICATOR)
+// =============================================================================
+ion-header {
+  ion-toolbar:first-of-type {
+    padding-top: var(--ion-safe-area-top, 0);
+  }
+}
+
+ion-fab[vertical="bottom"] {
+  bottom: calc(16px + var(--ion-safe-area-bottom, 0));
+}
+
+// =============================================================================
+// SKELETON LOADING
+// =============================================================================
+ion-skeleton-text {
+  --border-radius: 8px;
+  animation: skeleton-pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes skeleton-pulse {
+  0% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 0.3;
+  }
+  100% {
+    opacity: 0.6;
+  }
+}
+
+// =============================================================================
+// RIPPLE EFFECT MEJORADO (Android)
+// =============================================================================
+.md {
+  ion-item,
+  ion-button,
+  ion-fab-button {
+    --ripple-color: var(--ion-color-primary);
+  }
+}
+
+// =============================================================================
+// ACCESIBILIDAD
+// =============================================================================
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
 }

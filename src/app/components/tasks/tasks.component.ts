@@ -21,6 +21,7 @@ import {
   ellipseOutline,
   timeOutline as timeIcon,
   calendarOutline as calendarIcon,
+  menuOutline,
   // Iconos de categorías
   personOutline,
   briefcaseOutline,
@@ -121,6 +122,7 @@ export class TasksComponent implements OnInit {
       ellipseOutline,
       timeIcon,
       calendarIcon,
+      menuOutline,
       // Iconos de categorías
       personOutline,
       briefcaseOutline,

@@ -1,33 +1,81 @@
-<ion-split-pane contentId="main-content">
-  <ion-menu contentId="main-content" type="overlay">
-    <ion-header>
-      <ion-toolbar>
-        <ion-title>Menú</ion-title>
-      </ion-toolbar>
+<ion-split-pane contentId="main-content" [when]="false">
+  <ion-menu contentId="main-content" type="overlay" swipeGesture="true">
+    <!-- Header del menú -->
+    <ion-header class="menu-header">
+      <div class="menu-header-content">
+        <div class="app-logo">
+          <ion-icon name="sparkles-outline"></ion-icon>
+        </div>
+        <div class="app-info">
+          <h1>TaskFlow</h1>
+          <p>Organiza tu día</p>
+        </div>
+      </div>
     </ion-header>
-    <ion-content>
-      <ion-list>
-        <ion-menu-toggle auto-hide="false">
-          <ion-item
-            routerLink="/home/tasks"
-            routerLinkActive="selected"
-            [routerLinkActiveOptions]="{ exact: true }"
-          >
-            <ion-icon slot="start" name="list-outline"></ion-icon>
-            <ion-label>Tareas</ion-label>
-          </ion-item>
-        </ion-menu-toggle>
-        <ion-menu-toggle auto-hide="false">
-          <ion-item
-            routerLink="/home/categories"
-            routerLinkActive="selected"
-            [routerLinkActiveOptions]="{ exact: true }"
-          >
-            <ion-icon slot="start" name="color-palette-outline"></ion-icon>
-            <ion-label>Categorías</ion-label>
-          </ion-item>
-        </ion-menu-toggle>
-      </ion-list>
+
+    <ion-content class="menu-content">
+      <!-- Resumen rápido -->
+      <div class="quick-stats">
+        <div class="stat-item">
+          <span class="stat-number">{{ pendingTasksCount() }}</span>
+          <span class="stat-label">Pendientes</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat-item">
+          <span class="stat-number">{{ completedTasksCount() }}</span>
+          <span class="stat-label">Completadas</span>
+        </div>
+      </div>
+
+      <!-- Navegación principal -->
+      <div class="menu-section">
+        <p class="menu-section-title">Principal</p>
+        <ion-list lines="none" class="menu-list">
+          <ion-menu-toggle auto-hide="false">
+            <ion-item
+              button
+              routerLink="/home/tasks"
+              routerLinkActive="active"
+              [routerLinkActiveOptions]="{ exact: true }"
+              detail="false"
+              class="menu-item"
+            >
+              <div class="menu-item-icon" slot="start">
+                <ion-icon name="list-outline"></ion-icon>
+              </div>
+              <ion-label>Mis Tareas</ion-label>
+              @if (pendingTasksCount() > 0) {
+              <ion-badge slot="end" color="primary">{{ pendingTasksCount() }}</ion-badge>
+              }
+            </ion-item>
+          </ion-menu-toggle>
+
+          <ion-menu-toggle auto-hide="false">
+            <ion-item
+              button
+              routerLink="/home/categories"
+              routerLinkActive="active"
+              [routerLinkActiveOptions]="{ exact: true }"
+              detail="false"
+              class="menu-item"
+            >
+              <div class="menu-item-icon" slot="start">
+                <ion-icon name="color-palette-outline"></ion-icon>
+              </div>
+              <ion-label>Categorías</ion-label>
+              <ion-badge slot="end" color="medium">{{ categoriesCount() }}</ion-badge>
+            </ion-item>
+          </ion-menu-toggle>
+        </ion-list>
+      </div>
+
+      <!-- Espaciador flexible -->
+      <div class="menu-spacer"></div>
+
+      <!-- Footer del menú -->
+      <div class="menu-footer">
+        <p>TaskFlow v1.0</p>
+      </div>
     </ion-content>
   </ion-menu>
 
