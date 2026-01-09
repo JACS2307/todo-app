@@ -1,5 +1,12 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import {
+  FormsModule,
+  ReactiveFormsModule,
+  FormBuilder,
+  FormGroup,
+  Validators,
+} from '@angular/forms';
 import { IonicModule, ToastController, AlertController } from '@ionic/angular';
 import { addIcons } from 'ionicons';
 import {
@@ -7,21 +14,99 @@ import {
   trash,
   create,
   listOutline,
+  close,
+  checkmark,
+  filterOutline,
+  checkmarkCircleOutline,
+  ellipseOutline,
+  timeOutline as timeIcon,
+  calendarOutline as calendarIcon,
+  // Iconos de categorías
+  personOutline,
+  briefcaseOutline,
+  cartOutline,
+  homeOutline,
+  heartOutline,
+  starOutline,
+  bookmarkOutline,
+  flagOutline,
+  folderOutline,
+  documentOutline,
+  calendarOutline,
+  timeOutline,
+  fitnessOutline,
+  restaurantOutline,
+  carOutline,
+  airplaneOutline,
+  schoolOutline,
+  medkitOutline,
+  cashOutline,
+  giftOutline,
 } from 'ionicons/icons';
 import { Task } from 'src/app/models/task.model';
 import { TaskService } from 'src/app/services/task.service';
+import { CategoryService } from 'src/app/services/category.service';
 
 @Component({
   selector: 'app-task-list',
   templateUrl: './tasks.component.html',
   styleUrls: ['./tasks.component.scss'],
   standalone: true,
-  imports: [CommonModule, IonicModule],
+  imports: [CommonModule, IonicModule, FormsModule, ReactiveFormsModule],
 })
 export class TasksComponent implements OnInit {
   readonly taskService = inject(TaskService);
+  readonly categoryService = inject(CategoryService);
   private alertController = inject(AlertController);
   private toastController = inject(ToastController);
+  private fb = inject(FormBuilder);
+
+  // Modal state
+  isModalOpen = signal(false);
+  isEditing = signal(false);
+  selectedTask = signal<Task | null>(null);
+
+  // Filter state
+  selectedCategoryFilter = signal<string | null>(null);
+
+  // Form
+  taskForm!: FormGroup;
+
+  // Filtered tasks
+  filteredTasks = computed(() => {
+    const categoryId = this.selectedCategoryFilter();
+    const tasks = this.taskService.tasks();
+
+    if (!categoryId) {
+      return tasks;
+    }
+    return tasks.filter((task) => task.categoryId === categoryId);
+  });
+
+  // Tareas pendientes (filtradas)
+  pendingTasks = computed(() => {
+    return this.filteredTasks().filter((task) => !task.completed);
+  });
+
+  // Tareas completadas (filtradas)
+  completedTasks = computed(() => {
+    return this.filteredTasks().filter((task) => task.completed);
+  });
+
+  // Estadísticas
+  stats = computed(() => {
+    const all = this.taskService.tasks();
+    const pending = all.filter((t) => !t.completed).length;
+    const completed = all.filter((t) => t.completed).length;
+    const total = all.length;
+    const percentage = total > 0 ? Math.round((completed / total) * 100) : 0;
+    return { pending, completed, total, percentage };
+  });
+
+  // Conteo de tareas por categoría
+  getTaskCountByCategory(categoryId: string): number {
+    return this.taskService.tasks().filter((t) => t.categoryId === categoryId).length;
+  }
 
   constructor() {
     addIcons({
@@ -29,11 +114,39 @@ export class TasksComponent implements OnInit {
       trash,
       create,
       listOutline,
+      close,
+      checkmark,
+      filterOutline,
+      checkmarkCircleOutline,
+      ellipseOutline,
+      timeIcon,
+      calendarIcon,
+      // Iconos de categorías
+      personOutline,
+      briefcaseOutline,
+      cartOutline,
+      homeOutline,
+      heartOutline,
+      starOutline,
+      bookmarkOutline,
+      flagOutline,
+      folderOutline,
+      documentOutline,
+      calendarOutline,
+      timeOutline,
+      fitnessOutline,
+      restaurantOutline,
+      carOutline,
+      airplaneOutline,
+      schoolOutline,
+      medkitOutline,
+      cashOutline,
+      giftOutline,
     });
   }
 
   ngOnInit() {
-    // La carga inicial se hace en los servicios
+    this.initForm();
   }
 
   async toggleTask(task: Task) {
@@ -69,105 +182,70 @@ export class TasksComponent implements OnInit {
     await alert.present();
   }
 
-  async openCreateTask() {
-    const alert = await this.alertController.create({
-      header: 'Nueva tarea',
-      inputs: [
-        {
-          name: 'title',
-          type: 'text',
-          placeholder: 'Título',
-        },
-        {
-          name: 'description',
-          type: 'textarea',
-          placeholder: 'Descripción (opcional)',
-        },
-      ],
-      buttons: [
-        {
-          text: 'Cancelar',
-          role: 'cancel',
-        },
-        {
-          text: 'Guardar',
-          handler: (data) => {
-            const title = (data.title || '').trim();
-            if (!title) {
-              void this.showToast('El título es obligatorio', 'warning');
-              return false;
-            }
-            void this.createTask(title, data.description);
-            return true;
-          },
-        },
-      ],
+  // Form methods
+  private initForm(task?: Task) {
+    this.taskForm = this.fb.group({
+      title: [task?.title || '', [Validators.required, Validators.minLength(1)]],
+      description: [task?.description || ''],
+      categoryId: [task?.categoryId || null],
     });
-
-    await alert.present();
   }
 
-  async editTask(task: Task) {
-    const alert = await this.alertController.create({
-      header: 'Editar tarea',
-      inputs: [
-        {
-          name: 'title',
-          type: 'text',
-          value: task.title,
-        },
-        {
-          name: 'description',
-          type: 'textarea',
-          value: task.description || '',
-        },
-      ],
-      buttons: [
-        {
-          text: 'Cancelar',
-          role: 'cancel',
-        },
-        {
-          text: 'Guardar',
-          handler: (data) => {
-            const title = (data.title || '').trim();
-            if (!title) {
-              void this.showToast('El título es obligatorio', 'warning');
-              return false;
-            }
-            void this.updateTask(task, title, data.description);
-            return true;
-          },
-        },
-      ],
-    });
-
-    await alert.present();
+  openCreateTask() {
+    this.selectedTask.set(null);
+    this.isEditing.set(false);
+    this.initForm();
+    this.isModalOpen.set(true);
   }
 
-  private async createTask(title: string, description?: string) {
-    try {
-      await this.taskService.addTask({
-        title,
-        description: (description || '').trim() || undefined,
-        completed: false,
-      });
-      await this.showToast('Tarea creada', 'success');
-    } catch (error) {
-      await this.showToast('Error al crear la tarea', 'danger');
+  editTask(task: Task) {
+    this.selectedTask.set(task);
+    this.isEditing.set(true);
+    this.initForm(task);
+    this.isModalOpen.set(true);
+  }
+
+  closeModal() {
+    this.isModalOpen.set(false);
+    this.selectedTask.set(null);
+    this.isEditing.set(false);
+  }
+
+  async saveTask() {
+    if (this.taskForm.valid) {
+      const formValue = this.taskForm.value;
+      const taskData = {
+        title: formValue.title.trim(),
+        description: formValue.description?.trim() || undefined,
+        categoryId: formValue.categoryId || undefined,
+      };
+
+      try {
+        if (this.isEditing() && this.selectedTask()) {
+          await this.taskService.updateTask(this.selectedTask()!.id, taskData);
+          await this.showToast('Tarea actualizada', 'success');
+        } else {
+          await this.taskService.addTask({
+            ...taskData,
+            completed: false,
+          });
+          await this.showToast('Tarea creada', 'success');
+        }
+        this.closeModal();
+      } catch (error) {
+        await this.showToast('Error al guardar la tarea', 'danger');
+      }
     }
   }
 
-  private async updateTask(task: Task, title: string, description?: string) {
-    try {
-      await this.taskService.updateTask(task.id, {
-        title,
-        description: (description || '').trim() || undefined,
-      });
-      await this.showToast('Tarea actualizada', 'success');
-    } catch (error) {
-      await this.showToast('Error al actualizar la tarea', 'danger');
-    }
+  // Filter methods
+  filterByCategory(categoryId: string | null) {
+    this.selectedCategoryFilter.set(categoryId);
+  }
+
+  getCategoryById(categoryId: string | undefined) {
+    if (!categoryId) return null;
+    return this.categoryService.getCategoryById(categoryId);
   }
 
   async handleRefresh(event: any) {

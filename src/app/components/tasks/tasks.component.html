@@ -9,6 +9,58 @@
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
 
+  <!-- Header con estadísticas -->
+  <div class="stats-header">
+    <div class="stats-summary">
+      <div class="stats-progress">
+        <div class="progress-ring">
+          <svg viewBox="0 0 36 36">
+            <path
+              class="progress-bg"
+              d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+            />
+            <path
+              class="progress-fill"
+              [style.stroke-dasharray]="stats().percentage + ', 100'"
+              d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+            />
+          </svg>
+          <span class="progress-text">{{ stats().percentage }}%</span>
+        </div>
+      </div>
+      <div class="stats-details">
+        <h2>{{ stats().pending }} pendientes</h2>
+        <p>{{ stats().completed }} de {{ stats().total }} completadas</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Filtro de categorías -->
+  @if (categoryService.categories().length > 0) {
+  <div class="category-filter">
+    <button
+      class="filter-chip"
+      [class.active]="selectedCategoryFilter() === null"
+      (click)="filterByCategory(null)"
+    >
+      <span class="filter-chip-label">Todas</span>
+      <span class="filter-chip-count">{{ taskService.tasks().length }}</span>
+    </button>
+    @for (category of categoryService.categories(); track category.id) {
+    <button
+      class="filter-chip"
+      [class.active]="selectedCategoryFilter() === category.id"
+      [style.--chip-color]="category.color"
+      (click)="filterByCategory(category.id)"
+    >
+      <ion-icon [name]="category.icon || 'folder-outline'"></ion-icon>
+      <span class="filter-chip-label">{{ category.name }}</span>
+      <span class="filter-chip-count">{{ getTaskCountByCategory(category.id) }}</span>
+    </button>
+    }
+  </div>
+  }
+
   <!-- Loading spinner -->
   @if (taskService.loading()) {
   <div class="loading-container">
@@ -16,51 +68,137 @@
     <p>Cargando tareas...</p>
   </div>
   } @else {
-  <!-- Lista de tareas -->
-  @if (taskService.tasks().length > 0) {
-  <ion-list>
-    @for (task of taskService.tasks(); track task.id) {
-    <ion-item-sliding>
-      <ion-item [class.completed]="task.completed">
-        <ion-checkbox
-          slot="start"
-          [checked]="task.completed"
-          (ionChange)="toggleTask(task)"
-        ></ion-checkbox>
 
-        <ion-label [class.strikethrough]="task.completed">
-          <h2>{{ task.title }}</h2>
-          @if (task.description) {
-          <p>{{ task.description }}</p>
+  <!-- Contenido principal -->
+  @if (filteredTasks().length > 0) {
+  <div class="tasks-container">
+    <!-- Sección: Tareas Pendientes -->
+    @if (pendingTasks().length > 0) {
+    <div class="tasks-section">
+      <div class="section-header">
+        <ion-icon name="ellipse-outline" color="primary"></ion-icon>
+        <span>Pendientes</span>
+        <ion-badge color="primary">{{ pendingTasks().length }}</ion-badge>
+      </div>
+
+      <div class="tasks-list">
+        @for (task of pendingTasks(); track task.id) {
+        <div class="task-card" [class.has-category]="task.categoryId">
+          @if (getCategoryById(task.categoryId); as category) {
+          <div class="task-card-accent" [style.background]="category.color"></div>
           }
-        </ion-label>
 
-        <ion-note slot="end">
-          {{ task.createdAt | date : "shortDate" }}
-        </ion-note>
-      </ion-item>
+          <div class="task-card-content">
+            <div class="task-card-main">
+              <ion-checkbox
+                [checked]="task.completed"
+                (ionChange)="toggleTask(task)"
+              ></ion-checkbox>
 
-      <ion-item-options side="end">
-        <ion-item-option color="primary" (click)="editTask(task)">
-          <ion-icon name="create"></ion-icon>
-          Editar
-        </ion-item-option>
-        <ion-item-option color="danger" (click)="deleteTask(task)">
-          <ion-icon name="trash"></ion-icon>
-          Eliminar
-        </ion-item-option>
-      </ion-item-options>
-    </ion-item-sliding>
+              <div class="task-info" (click)="editTask(task)">
+                <h3 class="task-title">{{ task.title }}</h3>
+                @if (task.description) {
+                <p class="task-description">{{ task.description }}</p>
+                }
+
+                <div class="task-meta">
+                  @if (getCategoryById(task.categoryId); as category) {
+                  <span class="meta-category" [style.color]="category.color">
+                    <ion-icon [name]="category.icon || 'folder-outline'"></ion-icon>
+                    {{ category.name }}
+                  </span>
+                  }
+                  <span class="meta-date">
+                    <ion-icon name="calendar-outline"></ion-icon>
+                    {{ task.createdAt | date : "d MMM" }}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <div class="task-card-actions">
+              <ion-button fill="clear" size="small" (click)="editTask(task)">
+                <ion-icon name="create" slot="icon-only"></ion-icon>
+              </ion-button>
+              <ion-button fill="clear" size="small" color="danger" (click)="deleteTask(task)">
+                <ion-icon name="trash" slot="icon-only"></ion-icon>
+              </ion-button>
+            </div>
+          </div>
+        </div>
+        }
+      </div>
+    </div>
     }
-  </ion-list>
+
+    <!-- Sección: Tareas Completadas -->
+    @if (completedTasks().length > 0) {
+    <div class="tasks-section completed-section">
+      <div class="section-header">
+        <ion-icon name="checkmark-circle-outline" color="success"></ion-icon>
+        <span>Completadas</span>
+        <ion-badge color="success">{{ completedTasks().length }}</ion-badge>
+      </div>
+
+      <div class="tasks-list">
+        @for (task of completedTasks(); track task.id) {
+        <div class="task-card completed">
+          <div class="task-card-content">
+            <div class="task-card-main">
+              <ion-checkbox
+                [checked]="task.completed"
+                (ionChange)="toggleTask(task)"
+              ></ion-checkbox>
+
+              <div class="task-info">
+                <h3 class="task-title">{{ task.title }}</h3>
+                @if (task.description) {
+                <p class="task-description">{{ task.description }}</p>
+                }
+
+                <div class="task-meta">
+                  @if (getCategoryById(task.categoryId); as category) {
+                  <span class="meta-category" [style.color]="category.color">
+                    <ion-icon [name]="category.icon || 'folder-outline'"></ion-icon>
+                    {{ category.name }}
+                  </span>
+                  }
+                </div>
+              </div>
+            </div>
+
+            <div class="task-card-actions">
+              <ion-button fill="clear" size="small" color="danger" (click)="deleteTask(task)">
+                <ion-icon name="trash" slot="icon-only"></ion-icon>
+              </ion-button>
+            </div>
+          </div>
+        </div>
+        }
+      </div>
+    </div>
+    }
+  </div>
   } @else {
   <!-- Estado vacío -->
   <div class="empty-state">
-    <ion-icon name="list-outline" size="large"></ion-icon>
-    <h2>No hay tareas</h2>
-    <p>Pulsa el botón + para crear tu primera tarea</p>
+    <div class="empty-icon">
+      <ion-icon name="list-outline"></ion-icon>
+    </div>
+    @if (selectedCategoryFilter()) {
+    <h2>Sin tareas en esta categoría</h2>
+    <p>Crea una nueva tarea y asígnala aquí</p>
+    } @else {
+    <h2>Comienza tu día productivo</h2>
+    <p>Agrega tu primera tarea tocando el botón +</p>
+    }
+    <ion-button fill="outline" (click)="openCreateTask()">
+      <ion-icon name="add" slot="start"></ion-icon>
+      Nueva tarea
+    </ion-button>
   </div>
-  } }
+  }
+  }
 
   <!-- FAB para agregar tarea -->
   <ion-fab slot="fixed" vertical="bottom" horizontal="end">
@@ -68,4 +206,91 @@
       <ion-icon name="add"></ion-icon>
     </ion-fab-button>
   </ion-fab>
+
+  <!-- Modal para crear/editar tarea -->
+  <ion-modal [isOpen]="isModalOpen()" (didDismiss)="closeModal()">
+    <ng-template>
+      <ion-header>
+        <ion-toolbar>
+          <ion-buttons slot="start">
+            <ion-button (click)="closeModal()">
+              <ion-icon name="close"></ion-icon>
+            </ion-button>
+          </ion-buttons>
+          <ion-title>{{ isEditing() ? "Editar" : "Nueva" }} Tarea</ion-title>
+          <ion-buttons slot="end">
+            <ion-button
+              (click)="saveTask()"
+              [disabled]="!taskForm.valid"
+              strong
+              color="primary"
+            >
+              Guardar
+            </ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-header>
+
+      <ion-content class="ion-padding modal-content">
+        <form [formGroup]="taskForm">
+          <!-- Título -->
+          <div class="form-group">
+            <label class="form-label">Título *</label>
+            <ion-item lines="none" class="form-item">
+              <ion-input
+                formControlName="title"
+                placeholder="¿Qué necesitas hacer?"
+                [clearInput]="true"
+              ></ion-input>
+            </ion-item>
+            @if (taskForm.get('title')?.touched &&
+            taskForm.get('title')?.errors?.['required']) {
+            <span class="form-error">El título es requerido</span>
+            }
+          </div>
+
+          <!-- Descripción -->
+          <div class="form-group">
+            <label class="form-label">Descripción</label>
+            <ion-item lines="none" class="form-item">
+              <ion-textarea
+                formControlName="description"
+                placeholder="Agrega detalles adicionales..."
+                [autoGrow]="true"
+                rows="3"
+              ></ion-textarea>
+            </ion-item>
+          </div>
+
+          <!-- Categoría -->
+          <div class="form-group">
+            <label class="form-label">Categoría</label>
+            <div class="category-selector">
+              <button
+                type="button"
+                class="category-option"
+                [class.selected]="taskForm.get('categoryId')?.value === null"
+                (click)="taskForm.patchValue({ categoryId: null })"
+              >
+                <ion-icon name="folder-outline"></ion-icon>
+                <span>Sin categoría</span>
+              </button>
+              @for (category of categoryService.categories(); track category.id) {
+              <button
+                type="button"
+                class="category-option"
+                [class.selected]="taskForm.get('categoryId')?.value === category.id"
+                [style.--cat-color]="category.color"
+                (click)="taskForm.patchValue({ categoryId: category.id })"
+              >
+                <ion-icon [name]="category.icon || 'folder-outline'"></ion-icon>
+                <span>{{ category.name }}</span>
+              </button>
+              }
+            </div>
+          </div>
+        </form>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
 </ion-content>
