@@ -1,9 +1,16 @@
 import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'com.julieth.todoapp',
+  appId: 'com.tunombre.todoapp',
   appName: 'todo-app',
-  webDir: 'www'
+  webDir: 'www',
+  server: {
+    androidScheme: 'https',
+    cleartext: true,
+  },
+  ios: {
+    contentInset: 'always',
+  },
 };
 
 export default config;
