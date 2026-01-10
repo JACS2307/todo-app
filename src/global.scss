@@ -179,6 +179,22 @@ ion-menu {
 // =============================================================================
 // TRANSICIONES DE NAVEGACIÓN
 // =============================================================================
+
+// Fix para split-pane y router-outlet anidado
+ion-split-pane {
+  --side-width: 300px;
+  --side-max-width: 300px;
+
+  // Asegurar que el contenido principal ocupe todo el espacio disponible
+  ion-router-outlet {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+}
+
+// Router outlet principal
 ion-router-outlet {
   // Transición suave entre páginas
   > * {

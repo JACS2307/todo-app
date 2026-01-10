@@ -11,6 +11,9 @@ const config: CapacitorConfig = {
   ios: {
     contentInset: 'always',
   },
+  android: {
+    webContentsDebuggingEnabled: true,
+  },
 };
 
 export default config;

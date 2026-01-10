@@ -1,7 +1,19 @@
 import { Component, inject, OnInit, PLATFORM_ID, computed } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { IonicModule } from '@ionic/angular';
 import { RouterLink, RouterLinkActive } from '@angular/router';
+import {
+  IonSplitPane,
+  IonMenu,
+  IonHeader,
+  IonContent,
+  IonList,
+  IonItem,
+  IonIcon,
+  IonLabel,
+  IonBadge,
+  IonMenuToggle,
+  IonRouterOutlet,
+} from '@ionic/angular/standalone';
 
 import { addIcons } from 'ionicons';
 import {
@@ -21,7 +33,22 @@ import { CategoryService } from '../services/category.service';
   templateUrl: 'home.page.html',
   styleUrls: ['home.page.scss'],
   standalone: true,
-  imports: [CommonModule, IonicModule, RouterLink, RouterLinkActive],
+  imports: [
+    CommonModule,
+    RouterLink,
+    RouterLinkActive,
+    IonSplitPane,
+    IonMenu,
+    IonHeader,
+    IonContent,
+    IonList,
+    IonItem,
+    IonIcon,
+    IonLabel,
+    IonBadge,
+    IonMenuToggle,
+    IonRouterOutlet,
+  ],
 })
 export class HomePage implements OnInit {
   private platformId = inject(PLATFORM_ID);
